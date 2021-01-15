@@ -37,18 +37,22 @@ public class GeoService {
      */
     public GeoResults<RedisGeoCommands.GeoLocation> near(Point point) {
         // 半径3000米
-        Distance distance = new Distance(10, RedisGeoCommands.DistanceUnit.METERS);
+        Distance distance = new Distance(3000, RedisGeoCommands.DistanceUnit.METERS);
         Circle circle = new Circle(point, distance);
         // 查看附近的几个人，这里设置查看5人
         // RedisGeoCommands.GeoRadiusCommandArgs geoRadiusCommandArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().limit(5);
         // 如果无限制，去除.limit(5)
         RedisGeoCommands.GeoRadiusCommandArgs geoRadiusCommandArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending();
         GeoResults<RedisGeoCommands.GeoLocation> geoLocationGeoResult = redisTemplate.opsForGeo().radius(GEO_KEY, circle, geoRadiusCommandArgs);
+        // 获取list
         List<GeoResult<RedisGeoCommands.GeoLocation>> list = geoLocationGeoResult.getContent();
-        GeoResult<RedisGeoCommands.GeoLocation> geoLocationGeoResult1 = list.get(0);
-        System.out.println(geoLocationGeoResult1.getContent());
-        System.out.println(geoLocationGeoResult1.getDistance());
         System.out.println(list);
+        // list中一个元素
+        GeoResult<RedisGeoCommands.GeoLocation> geoLocationGeoResult1 = list.get(0);
+        // 该元素地理系统
+        System.out.println(geoLocationGeoResult1.getContent());
+        // 该元素距离信息
+        System.out.println(geoLocationGeoResult1.getDistance());
         return geoLocationGeoResult;
     }
 }
